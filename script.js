@@ -1,0 +1,92 @@
+const main = document.querySelector("main");
+const root = document.querySelector(":root");
+const input = document.getElementById("input");
+const resultInput = document.getElementById("result");
+
+const allowedKeys = [
+  "(",
+  ")",
+  "/",
+  "*",
+  "-",
+  "+",
+  "9",
+  "8",
+  "7",
+  "6",
+  "5",
+  "4",
+  "3",
+  "2",
+  "1",
+  "0",
+  ".",
+  "%",
+  " ",
+];
+//conferindo se a tecla pressionada consta  no arrays das permitidas
+
+document.querySelectorAll(".charKey").forEach(charkeybtn=> {
+  charkeybtn.addEventListener("click", function () {
+    const value = charkeybtn.dataset.value;
+    input.value += value;
+  });
+});
+
+input.addEventListener("keydown", function (e) {
+  e.preventDefault();
+  if (allowedKeys.includes(e.key)) {
+    input.value += e.key;
+    return;
+  }
+  if (e.key === "Enter") {
+    calculate();
+    return;
+  }
+  if (e.key === "Backspace") {
+    input.value = input.value.slice(0, -1);
+    return;
+  }
+});
+document.getElementById("clear").addEventListener("click", function () {
+  input.value = "";
+  input.focus();
+});
+document.getElementById("equal").addEventListener("click", calculate);
+
+function calculate() {
+  resultInput.value='ERROR'
+  resultInput.classList.add('error')
+  const result = eval(input.value);
+  resultInput.classList.remove('error')
+  resultInput.value = result;
+}
+
+document.getElementById("themeSwitcher").addEventListener("click", function () {
+  if (main.dataset.theme === "dark") {
+    root.style.setProperty("--bg-color", "#f1f5f9");
+    root.style.setProperty("--border-color", "#aaa");
+    root.style.setProperty("--font-color", "#212529");
+    root.style.setProperty("--primary-color", "#26834a");
+    main.dataset.theme = "light";
+  } else {
+    root.style.setProperty("--bg-color", "#212529");
+    root.style.setProperty("--border-color", "#f1f5f9");
+    root.style.setProperty("--font-color", "#f1f5f9");
+    root.style.setProperty("--primary-color", "#4dff91");
+    main.dataset.theme = "dark";
+  }
+});
+document
+  .getElementById("copyToClipboard")
+  .addEventListener("click", function (e) {
+    const btn = e.currentTarget;
+    if (btn.innerText === "Copy") {
+      btn.innerText = "Copied";
+      btn.classList.add("success");
+      navigator.clipboard.writeText(resultInput.value);
+    } else {
+      btn.innerText = "Copy";
+      btn.classList.remove("success");
+    }
+  });
